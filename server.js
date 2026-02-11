@@ -8,7 +8,12 @@ const fs = require('fs');
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  cors: { origin: "*" },
+  transports: ['polling'], // ← только polling, без websocket
+  allowUpgrades: false,
+  path: '/socket.io' // важно — должно совпадать с тем, что использует клиент
+});
 const uploader = multer();
 const data = JSON.parse(fs.readFileSync('./data.json', 'utf8'));
 const bot = new telegramBot(data.token, { polling: true, request: {} });
